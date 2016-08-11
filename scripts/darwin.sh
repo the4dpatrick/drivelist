@@ -4,11 +4,15 @@ function get_key {
   grep "$1" | awk -F "  +" '{ print $3 }'
 }
 
+function get_identifier {
+  awk 'NF>1{print $NF}'
+}
+
 function get_until_paren {
   awk 'match($0, "\\(|$"){ print substr($0, 0, RSTART - 1) }'
 }
 
-DISKS="`diskutil list | grep '^\/' | get_until_paren`"
+DISKS="`diskutil list | grep '\d:' | get_identifier`"
 
 for disk in $DISKS; do
   diskinfo="`diskutil info $disk`"
@@ -17,9 +21,8 @@ for disk in $DISKS; do
   description=`echo "$diskinfo" | get_key "Device / Media Name"`
   mountpoint=`echo "$diskinfo" | get_key "Mount Point"`
   removable=`echo "$diskinfo" | get_key "Removable Media"`
-  protected=`echo "$diskinfo" | get_key "Read-Only Media"`
   location=`echo "$diskinfo" | get_key "Device Location"`
-  size=`echo "$diskinfo" | sed 's/Disk Size/Total Size/g' | get_key "Total Size" | perl -n -e'/\((\d+)\sBytes\)/ && print $1'`
+  size=`echo "$diskinfo" | get_key "Total Size" | get_until_paren`
 
   # Omit mounted DMG images
   if [ "$description" == "Disk Image" ]; then
@@ -32,15 +35,9 @@ for disk in $DISKS; do
   echo "mountpoint: $mountpoint"
   echo "name: $device"
 
-  if [[ "$protected" == "Yes" ]]; then
-    echo "protected: True"
-  else
-    echo "protected: False"
-  fi
-
   if [[ "$device" == "/dev/disk0" ]] || \
      [[ "$removable" == "No" ]] || \
-     [[ ( "$location" == "Internal" ) && ( "$removable" != "Yes" ) && ( "$removable" != "Removable" ) ]] || \
+     [[ ( "$location" == "Internal" ) && ( "$removable" != "Yes" ) ]] || \
      [[ "$mountpoint" == "/" ]]
   then
     echo "system: True"
