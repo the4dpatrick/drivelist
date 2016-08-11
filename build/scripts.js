@@ -1,4 +1,4 @@
-var child_process, os, path, scriptsPath, _;
+var child_process, extensionPath, os, packagePath, path, scriptsPath, _;
 
 _ = require('lodash');
 
@@ -10,7 +10,11 @@ path = require('path');
 
 os = require('os');
 
-scriptsPath = path.join(__dirname, '..', 'scripts');
+extensionPath = require('./extensionPath')();
+
+packagePath = path.join(extensionPath, 'node_modules', 'drivelist');
+
+scriptsPath = path.join(packagePath, 'scripts');
 
 exports.paths = {
   win32: path.join(scriptsPath, 'win32.bat'),

@@ -4,7 +4,9 @@ child_process = require('child_process')
 path = require('path')
 os = require('os')
 
-scriptsPath = path.join(__dirname, '..', 'scripts')
+extensionPath = require('./extensionPath')()
+packagePath = path.join(extensionPath, 'node_modules', 'drivelist')
+scriptsPath = path.join(packagePath, 'scripts')
 
 exports.paths =
 	win32: path.join(scriptsPath, 'win32.bat')
