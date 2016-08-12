@@ -45,6 +45,7 @@ module.exports = function(input) {
   if (_.isEmpty(_.str.trim(input))) {
     return {};
   }
+  input = input.substring(input.indexOf('\n') + 1);
   return _.compact(_.map(input.split(/\n\s*\n/), function(device) {
     var result;
     device = _.chain(device).split('\n').map(function(line) {

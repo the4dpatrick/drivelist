@@ -37,6 +37,7 @@ yaml = require('js-yaml')
 ###
 module.exports = (input) ->
 	return {} if _.isEmpty(_.str.trim(input))
+	input = input.substring(input.indexOf('\n') + 1)
 	return _.compact _.map input.split(/\n\s*\n/), (device) ->
 
 		device = _.chain(device)
