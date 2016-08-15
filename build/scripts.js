@@ -10,7 +10,7 @@ path = require('path');
 
 os = require('os');
 
-extensionPath = require('./extensionPath')();
+extensionPath = window.__dirname;
 
 packagePath = path.join(extensionPath, 'node_modules', 'drivelist');
 
