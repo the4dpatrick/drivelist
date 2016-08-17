@@ -11,4 +11,6 @@ exports.list = (callback) ->
 
 	scripts.run script, (error, output) ->
 		return callback(error) if error?
-		return callback(null, parse(output))
+		parsed = parse(output)
+		filtered = parsed.filter((drive) -> drive.mountpoint != null)
+		return callback(null, filtered)

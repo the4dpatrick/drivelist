@@ -14,9 +14,14 @@ exports.list = function(callback) {
     throw new Error("Your OS is not supported by this module: " + operatingSystem);
   }
   return scripts.run(script, function(error, output) {
+    var filtered, parsed;
     if (error != null) {
       return callback(error);
     }
-    return callback(null, parse(output));
+    parsed = parse(output);
+    filtered = parsed.filter(function(drive) {
+      return drive.mountpoint !== null;
+    });
+    return callback(null, filtered);
   });
 };
